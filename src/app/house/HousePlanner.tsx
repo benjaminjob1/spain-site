@@ -39,6 +39,19 @@ const DEFAULT_ITEMS: ChecklistItem[] = [
   { id: "w6", cat: "While away", item: "Mail forwarding / collection", notes: "Bank statements, council letters, post. Keyholder can collect weekly.", status: "todo" },
   { id: "w7", cat: "While away", item: "Aircon / heating servicing", notes: "Annual service before summer (aircon) and winter (heating). Filters need cleaning.", status: "todo" },
   { id: "w8", cat: "While away", item: "Water leak detection + shut-off", notes: "Smart water sensors + automatic shutoff valve — holiday homes can flood unnoticed.", status: "todo" },
+  // Furnishing & decorating
+  { id: "f1", cat: "Furnishing", item: "Inventory what's already there", notes: "What's included in the sale — fitted kitchen, wardrobes, AC units, light fittings. Photograph everything for insurance.", status: "todo" },
+  { id: "f2", cat: "Furnishing", item: "Bedroom furniture", notes: "Beds, mattresses, bedside tables, wardrobes (if not fitted), linen. Often UK or Scandinavian suppliers ship to Spain.", status: "todo" },
+  { id: "f3", cat: "Furnishing", item: "Living room furniture", notes: "Sofas, coffee table, TV unit, side tables, lamps. Consider outdoor-proof fabrics for terrace pieces.", status: "todo" },
+  { id: "f4", cat: "Furnishing", item: "Dining", notes: "Dining table + chairs (indoor and outdoor), bar stools if there's a kitchen island.", status: "todo" },
+  { id: "f5", cat: "Furnishing", item: "Kitchenware & small appliances", notes: "Pots, pans, cutlery, glasses (incl. tumblers for terrace), kettle, toaster, coffee machine, blender. Some Spanish kitchens don't include white goods.", status: "todo" },
+  { id: "f6", cat: "Furnishing", item: "Towels & bedding", notes: "Beach + bath towels, duvets/pillows suited to summer (lightweight) + winter (heavier). Quality sets last.", status: "todo" },
+  { id: "f7", cat: "Furnishing", item: "TV + AV equipment", notes: "Smart TV for general viewing; cinema room has its own dedicated gear on /cinema.", status: "todo" },
+  { id: "f8", cat: "Furnishing", item: "Outdoor furniture", notes: "Sun loungers, dining set, parasol, outdoor sofa / chairs. Hot summers mean you want shade + comfort.", status: "todo" },
+  { id: "f9", cat: "Furnishing", item: "Decoration & soft furnishings", notes: "Cushions, throws, rugs, artwork, mirrors, plants, candles. Brings the place to life — often the difference between 'rental' and 'home'.", status: "todo" },
+  { id: "f10", cat: "Furnishing", item: "Storage solutions", notes: "Under-bed boxes, hall tree, shoe rack, hall closet. Holiday homes often lack storage; bring more than you think.", status: "todo" },
+  { id: "f11", cat: "Furnishing", item: "Cleaning kit + tools", notes: "Vacuum, mop, broom, dustpan, iron, ironing board, basic tool kit, step ladder. Don't rely on the keyholder providing these.", status: "todo" },
+  { id: "f12", cat: "Furnishing", item: "Welcome pack", notes: "Tea, coffee, sugar, salt, pepper, oil, loo roll, hand soap, dish soap, bin bags. Means you arrive to a working kitchen/bathroom.", status: "todo" },
 ];
 
 const ROOMS = [
@@ -143,7 +156,7 @@ export default function HousePlanner() {
           <p className="text-sm text-muted mb-4">
             Click a status badge to cycle through (todo → doing → done → blocked). Edit notes inline.
           </p>
-          {(["Purchase", "Utilities", "Insurance", "While away"] as const).map((cat) => {
+          {(["Purchase", "Utilities", "Insurance", "While away", "Furnishing"] as const).map((cat) => {
             const catItems = items.filter((i) => i.cat === cat);
             if (catItems.length === 0) return null;
             return (

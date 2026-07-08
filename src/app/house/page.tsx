@@ -12,7 +12,7 @@ export default function HousePage() {
       </Link>
       <h1 className="text-4xl md:text-5xl font-bold mb-6">🏠 House planner</h1>
       <p className="text-lg text-muted mb-12 max-w-3xl">
-        Spain-specific. Move-in checklist, room-by-room decisions, floor plan, contacts. State is
+        Ownership essentials, room-by-room decisions, while-away management. State is
         saved locally in your browser for now.
       </p>
 

@@ -12,8 +12,8 @@ export default function Home() {
           Los Alcázares <span className="gradient-text">&amp; beyond</span>
         </h1>
         <p className="text-xl md:text-2xl text-muted max-w-2xl leading-relaxed">
-          Planning hub for the new house on the Mar Menor coast. Trips,
-          decisions, layouts, and a home theatre that actually sounds right.
+          Planning hub for the house on the Mar Menor coast. Trips, decisions,
+          layouts, and a home theatre that actually sounds right.
         </p>
       </section>
 
@@ -45,7 +45,8 @@ export default function Home() {
         >
           <h2 className="text-2xl font-semibold mb-2">🏠 House planner</h2>
           <p className="text-muted">
-            Floor plan sketch, room-by-room decisions, todo list.
+            Ownership essentials, room-by-room decisions, while-away
+            management.
           </p>
         </Link>
 
@@ -63,10 +64,7 @@ export default function Home() {
 
       {/* Status */}
       <section className="border-t pt-8 text-sm text-muted">
-        <p>
-          Status: scaffolding. Ready for September move-in. Hidden from public
-          for now — build, iterate, then share when ready.
-        </p>
+        <p>Private — for household use only.</p>
       </section>
     </main>
   );

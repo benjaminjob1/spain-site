@@ -13,30 +13,32 @@ type ChecklistItem = {
 };
 
 const DEFAULT_ITEMS: ChecklistItem[] = [
-  // Pre-deposit / during purchase
-  { id: "c1", cat: "Purchase", item: "NIE number (foreigner ID)", notes: "Apply at Spanish consulate in UK, or in Spain at a police station with foreign office. Required for everything else.", status: "todo" },
+  // Purchase essentials
+  { id: "c1", cat: "Purchase", item: "NIE number (foreigner ID)", notes: "Apply at Spanish consulate in UK, or in Spain at a police station with foreign office. Required for almost everything else.", status: "todo" },
   { id: "c2", cat: "Purchase", item: "Bank account (Spanish)", notes: "Bankinter / CaixaBank / Sabadell all have English-speaking staff. Bring NIE + passport + proof of address.", status: "todo" },
   { id: "c3", cat: "Purchase", item: "Notary appointment", notes: "Required to sign deeds (escritura). Notary fee ~0.5–1% of property value.", status: "todo" },
   { id: "c4", cat: "Purchase", item: "Land registry (Registro de la Propiedad)", notes: "Your notary usually files this within days of signing. Get a nota simple to confirm ownership is clean.", status: "todo" },
   { id: "c5", cat: "Purchase", item: "ITP (property transfer tax)", notes: "Murcia region: 8% for resale properties. Paid at signing or within 30 days.", status: "todo" },
   { id: "c6", cat: "Purchase", item: "Plusvalía (municipal tax)", notes: "Council tax on the land value increase. Town hall handles.", status: "todo" },
-  // Ongoing / utilities
+  // Utilities (you need these even as a holiday home owner)
   { id: "u1", cat: "Utilities", item: "Electricity contract", notes: "Iberdrola / Endesa / Naturgy. Need NIE + CUPS number (from previous owner or new install).", status: "todo" },
-  { id: "u2", cat: "Utilities", item: "Water contract", notes: "Local town hall or Aguas de Murcia. CUPS-like number.", status: "todo" },
+  { id: "u2", cat: "Utilities", item: "Water contract", notes: "Local town hall or Aguas de Murcia.", status: "todo" },
   { id: "u3", cat: "Utilities", item: "Internet / fibre install", notes: "Movistar / Orange / Vodafone. Check fibre availability for the address. Allow 1-4 weeks.", status: "todo" },
   { id: "u4", cat: "Utilities", item: "Gas (if applicable)", notes: "Most Spanish homes use bottled gas (butano) or electric. Check the kitchen setup.", status: "todo" },
   { id: "u5", cat: "Utilities", item: "Council tax (IBI)", notes: "Annual. Billed by town hall. ~€300-800/yr typical.", status: "todo" },
   { id: "u6", cat: "Utilities", item: "Basura (rubbish collection)", notes: "Annual fee on top of IBI.", status: "todo" },
   // Insurance
   { id: "i1", cat: "Insurance", item: "Home insurance (buildings + contents)", notes: "Required if mortgaged. Liberty Seguros / Mapfre / Linea Directa. €200-600/yr.", status: "todo" },
-  { id: "i2", cat: "Insurance", item: "Health insurance / public healthcare", notes: "EU residents can access public system after S1 form (post-Brexit UK). Private top-up common: Sanitas / Adeslas / DKV.", status: "todo" },
-  { id: "i3", cat: "Insurance", item: "Car insurance (if bringing UK car)", notes: "OR re-register car as Spanish (import taxes + ITV). Many UK owners keep UK plates with temporary import.", status: "todo" },
-  // Move / settle
-  { id: "m1", cat: "Move-in", item: "Empadronamiento (register at town hall)", notes: "Required for many things. Take NIE + deed + utility bill.", status: "todo" },
-  { id: "m2", cat: "Move-in", item: "Driving licence exchange", notes: "UK licence valid in Spain for residents, but after 2 yrs need to swap. NO test required before Brexit rules changed — check current status.", status: "todo" },
-  { id: "m3", cat: "Move-in", item: "School enrolment (if applicable)", notes: "Public schools free, but catchment zones. Apply via consejería de educación.", status: "todo" },
-  { id: "m4", cat: "Move-in", item: "Vehicle ITV / ITV appointment", notes: "Annual technical inspection (MOT equivalent). ITV stations by region.", status: "todo" },
-  { id: "m5", cat: "Move-in", item: "Spanish phone number", notes: "Movistar / Orange / Vodafone / O2. €10-20/mo for pay-as-you-go.", status: "todo" },
+  { id: "i2", cat: "Insurance", item: "Travel insurance for visits", notes: "Annual multi-trip covers medical + cancellation for short stays. UK GHIC gives reciprocal healthcare for visits.", status: "todo" },
+  // While away — holiday home specific
+  { id: "w1", cat: "While away", item: "Keyholder / property manager", notes: "Local contact who can check on the house, take in deliveries, deal with emergencies. Often 3-4 visits/month included.", status: "todo" },
+  { id: "w2", cat: "While away", item: "Alarm system + smart home", notes: "Monitored alarm (Securitas Direct / Prosegur). Smart locks + cameras + leak detectors viewable on phone.", status: "todo" },
+  { id: "w3", cat: "While away", item: "Pool maintenance", notes: "Weekly service: chemical balance, cleaning, equipment check. ~€100-150/month in summer, less in winter.", status: "todo" },
+  { id: "w4", cat: "While away", item: "Garden maintenance", notes: "Mowing, pruning, irrigation check. Especially important in summer heat.", status: "todo" },
+  { id: "w5", cat: "While away", item: "Cleaning between visits", notes: "Pre-arrival clean + laundry change. Standard 3-4 bed holiday home clean ~€80-120.", status: "todo" },
+  { id: "w6", cat: "While away", item: "Mail forwarding / collection", notes: "Bank statements, council letters, post. Keyholder can collect weekly.", status: "todo" },
+  { id: "w7", cat: "While away", item: "Aircon / heating servicing", notes: "Annual service before summer (aircon) and winter (heating). Filters need cleaning.", status: "todo" },
+  { id: "w8", cat: "While away", item: "Water leak detection + shut-off", notes: "Smart water sensors + automatic shutoff valve — holiday homes can flood unnoticed.", status: "todo" },
 ];
 
 const ROOMS = [
@@ -98,7 +100,7 @@ export default function HousePlanner() {
       {/* Progress */}
       <section className="rounded-xl border bg-surface p-4">
         <div className="flex justify-between items-center mb-2">
-          <h2 className="font-semibold">Spain house move-in progress</h2>
+          <h2 className="font-semibold">Holiday home ownership progress</h2>
           <span className="text-accent font-bold text-xl">{pct}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3 mb-3 overflow-hidden">
@@ -118,7 +120,7 @@ export default function HousePlanner() {
       {/* Tabs */}
       <div className="flex gap-2 border-b overflow-x-auto">
         {[
-          { id: "checklist" as const, label: "✅ Pre-move checklist" },
+          { id: "checklist" as const, label: "✅ Checklist" },
           { id: "rooms" as const, label: "🏠 Rooms & decisions" },
           { id: "floor" as const, label: "📐 Floor plan" },
           { id: "contacts" as const, label: "👥 Contacts" },
@@ -141,7 +143,7 @@ export default function HousePlanner() {
           <p className="text-sm text-muted mb-4">
             Click a status badge to cycle through (todo → doing → done → blocked). Edit notes inline.
           </p>
-          {(["Purchase", "Utilities", "Insurance", "Move-in"] as const).map((cat) => {
+          {(["Purchase", "Utilities", "Insurance", "While away"] as const).map((cat) => {
             const catItems = items.filter((i) => i.cat === cat);
             if (catItems.length === 0) return null;
             return (

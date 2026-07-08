@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fef9f3;
+  --foreground: #1f1a17;
+  --accent: #c8451f;
+  --accent-hover: #e85a35;
+  --surface: #ffffff;
+  --muted: #6b5d52;
+  --border: #e8dfd4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+* {
+  border-color: var(--border);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #c8451f 0%, #e89556 50%, #d4a843 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

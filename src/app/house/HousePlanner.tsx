@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSharedState } from "@/lib/useSharedState";
+import ConflictModal from "../components/ConflictModal";
 
 type Status = "todo" | "doing" | "done" | "blocked";
 
@@ -54,7 +56,9 @@ const DEFAULT_ITEMS: ChecklistItem[] = [
   { id: "f12", cat: "Furnishing", item: "Welcome pack", notes: "Tea, coffee, sugar, salt, pepper, oil, loo roll, hand soap, dish soap, bin bags. Means you arrive to a working kitchen/bathroom.", status: "todo" },
 ];
 
-const ROOMS = [
+type Room = { id: string; label: string; notes: string };
+
+const ROOMS: Room[] = [
   { id: "lounge", label: "Lounge / living", notes: "" },
   { id: "kitchen", label: "Kitchen", notes: "" },
   { id: "master", label: "Master bedroom", notes: "" },
@@ -84,53 +88,27 @@ const STATUS_LABELS: Record<Status, string> = {
 };
 
 export default function HousePlanner() {
-  // Start with defaults on both server and first client render to avoid a
-  // hydration mismatch, then re-hydrate from localStorage after mount.
-  const [items, setItems] = useState<ChecklistItem[]>(DEFAULT_ITEMS);
-  const [rooms, setRooms] = useState(ROOMS);
+  // Shared state — backed by the server (/api/state/house). Mirrored in
+  // localStorage so the page works offline / paints instantly. New default
+  // items (added in code) are auto-merged in on hydration.
+  const state = useSharedState<{ items: ChecklistItem[]; rooms: Room[] }>(
+    "house",
+    { items: DEFAULT_ITEMS, rooms: ROOMS }
+  );
+  const { items, rooms } = state.data;
+  // Stable setters — keep call-sites backwards-compatible.
+  const setItems = (next: ChecklistItem[] | ((prev: ChecklistItem[]) => ChecklistItem[])) =>
+    state.setLocal((prev) => ({
+      ...prev,
+      items: typeof next === "function" ? (next as (p: ChecklistItem[]) => ChecklistItem[])(prev.items) : next,
+    }));
+  const setRooms = (next: Room[] | ((prev: Room[]) => Room[])) =>
+    state.setLocal((prev) => ({
+      ...prev,
+      rooms: typeof next === "function" ? (next as (p: Room[]) => Room[])(prev.rooms) : next,
+    }));
+
   const [activeTab, setActiveTab] = useState<"checklist" | "rooms" | "floor" | "contacts">("checklist");
-
-  // Load saved state on first client render.
-  useEffect(() => {
-    try {
-      const savedItems = window.localStorage.getItem("spain.house.items");
-      if (savedItems) {
-        const parsed = JSON.parse(savedItems) as ChecklistItem[];
-        // Merge: keep any default items that were added since last save, but
-        // restore the user's notes + status for items that still exist.
-        setItems((current) =>
-          current.map((c) => {
-            const found = parsed.find((p) => p.id === c.id);
-            return found ? { ...c, status: found.status, notes: found.notes } : c;
-          })
-        );
-      }
-      const savedRooms = window.localStorage.getItem("spain.house.rooms");
-      if (savedRooms) {
-        const parsed = JSON.parse(savedRooms) as { id: string; notes: string }[];
-        setRooms((current) =>
-          current.map((r) => {
-            const found = parsed.find((p) => p.id === r.id);
-            return found ? { ...r, notes: found.notes } : r;
-          })
-        );
-      }
-    } catch {
-      // Corrupted localStorage; ignore.
-    }
-  }, []);
-
-  // Persist on change.
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("spain.house.items", JSON.stringify(items));
-    } catch {}
-  }, [items]);
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("spain.house.rooms", JSON.stringify(rooms));
-    } catch {}
-  }, [rooms]);
 
   const setStatus = (id: string, status: Status) => {
     setItems(items.map((it) => (it.id === id ? { ...it, status } : it)));
@@ -302,6 +280,32 @@ export default function HousePlanner() {
             </p>
           </div>
         </section>
+      )}
+
+      {state.conflict && (
+        <ConflictModal
+          title="House planner"
+          theirs={state.conflict.theirs}
+          mine={state.data}
+          diffHint={(t, m) => {
+            const fields: string[] = [];
+            // Compare per-item status / notes.
+            for (const tm of m.items) {
+              const theirsItem = t.items.find((x) => x.id === tm.id);
+              if (!theirsItem) continue;
+              if (theirsItem.status !== tm.status) fields.push(`"${tm.item}" status differs (${tm.status} vs ${theirsItem.status})`);
+              else if (theirsItem.notes !== tm.notes) fields.push(`"${tm.item}" notes differ`);
+            }
+            for (const tr of m.rooms) {
+              const theirsRoom = t.rooms.find((x) => x.id === tr.id);
+              if (!theirsRoom) continue;
+              if (theirsRoom.notes !== tr.notes) fields.push(`Room "${tr.label}" notes differ`);
+            }
+            return fields.length ? fields.slice(0, 8) : ["state differs"];
+          }}
+          onResolve={(how, merged) => state.resolveConflict(how, merged)}
+          onCancel={() => state.resolveConflict("keepTheirs")}
+        />
       )}
     </div>
   );

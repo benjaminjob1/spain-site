@@ -1,7 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Cinema3D from "./Cinema3D";
+import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+
+// three.js is heavy (~600kb). Lazy-load the 3D scene so the rest of the
+// cinema page paints first, and only fetch three.js when the user scrolls
+// to the 3D section (or immediately on small viewports).
+const Cinema3D = dynamic(() => import("./Cinema3D"), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-xl border bg-surface h-[500px] flex items-center justify-center text-muted">
+      Loading 3D room designer…
+    </div>
+  ),
+});
 
 type Calc = {
   roomLength: number; // metres
@@ -172,8 +184,41 @@ function RoomDiagram({ calc }: { calc: Calc }) {
 }
 
 export default function CinemaPlanner() {
+  // Persist room/screen settings + budget tier to localStorage. SSR-safe: we
+  // start with DEFAULT on both server and first client render, then
+  // re-hydrate from localStorage in an effect after mount. This avoids a
+  // hydration mismatch while still persisting across reloads.
   const [calc, setCalc] = useState<Calc>(DEFAULT);
   const [budgetTier, setBudgetTier] = useState<"low" | "mid" | "high">("mid");
+
+  // Load saved state on first client render.
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("spain.cinema.calc");
+      if (saved) {
+        const parsed = JSON.parse(saved) as Partial<Calc>;
+        setCalc((c) => ({ ...c, ...parsed }));
+      }
+      const savedTier = window.localStorage.getItem("spain.cinema.tier");
+      if (savedTier === "low" || savedTier === "mid" || savedTier === "high") {
+        setBudgetTier(savedTier);
+      }
+    } catch {
+      // Corrupted localStorage entry; ignore and use defaults.
+    }
+  }, []);
+
+  // Persist on change.
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("spain.cinema.calc", JSON.stringify(calc));
+    } catch {}
+  }, [calc]);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("spain.cinema.tier", budgetTier);
+    } catch {}
+  }, [budgetTier]);
 
   const rec = useMemo(() => recommendedDistances(calc.screenDiag), [calc.screenDiag]);
 

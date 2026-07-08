@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Status = "todo" | "doing" | "done" | "blocked";
 
@@ -84,9 +84,53 @@ const STATUS_LABELS: Record<Status, string> = {
 };
 
 export default function HousePlanner() {
+  // Start with defaults on both server and first client render to avoid a
+  // hydration mismatch, then re-hydrate from localStorage after mount.
   const [items, setItems] = useState<ChecklistItem[]>(DEFAULT_ITEMS);
   const [rooms, setRooms] = useState(ROOMS);
   const [activeTab, setActiveTab] = useState<"checklist" | "rooms" | "floor" | "contacts">("checklist");
+
+  // Load saved state on first client render.
+  useEffect(() => {
+    try {
+      const savedItems = window.localStorage.getItem("spain.house.items");
+      if (savedItems) {
+        const parsed = JSON.parse(savedItems) as ChecklistItem[];
+        // Merge: keep any default items that were added since last save, but
+        // restore the user's notes + status for items that still exist.
+        setItems((current) =>
+          current.map((c) => {
+            const found = parsed.find((p) => p.id === c.id);
+            return found ? { ...c, status: found.status, notes: found.notes } : c;
+          })
+        );
+      }
+      const savedRooms = window.localStorage.getItem("spain.house.rooms");
+      if (savedRooms) {
+        const parsed = JSON.parse(savedRooms) as { id: string; notes: string }[];
+        setRooms((current) =>
+          current.map((r) => {
+            const found = parsed.find((p) => p.id === r.id);
+            return found ? { ...r, notes: found.notes } : r;
+          })
+        );
+      }
+    } catch {
+      // Corrupted localStorage; ignore.
+    }
+  }, []);
+
+  // Persist on change.
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("spain.house.items", JSON.stringify(items));
+    } catch {}
+  }, [items]);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("spain.house.rooms", JSON.stringify(rooms));
+    } catch {}
+  }, [rooms]);
 
   const setStatus = (id: string, status: Status) => {
     setItems(items.map((it) => (it.id === id ? { ...it, status } : it)));

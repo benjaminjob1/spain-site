@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Cinema3D from "./Cinema3D";
 
 type Calc = {
   roomLength: number; // metres
@@ -382,17 +383,15 @@ export default function CinemaPlanner() {
         </p>
       </section>
 
-      {/* === HEAVY: 3D room designer placeholder === */}
+      {/* === HEAVY: 3D room designer === */}
       <section>
         <h2 className="text-3xl font-semibold mb-4">🏗️ 3D room designer</h2>
-        <div className="rounded-xl border bg-surface p-8 text-center">
-          <p className="text-muted mb-3">3D room builder — coming soon.</p>
-          <p className="text-sm text-muted">
-            Will use three.js to render your room with draggable furniture, screen, speakers, and acoustic
-            treatment. Lets you walk through the room and check sightlines / speaker angles before buying
-            anything.
-          </p>
-        </div>
+        <p className="text-muted mb-6">
+          Drag to rotate, scroll to zoom. Auto-rotates by default — click to stop. Speakers, screen,
+          seating rows, MLP marker all rendered. Adjust room dimensions and screen size above to see
+          the layout update live.
+        </p>
+        <Cinema3D calc={calc} />
       </section>
     </div>
   );

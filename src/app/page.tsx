@@ -6,14 +6,13 @@ export default function Home() {
       {/* Hero */}
       <section className="mb-16">
         <p className="text-sm uppercase tracking-widest text-accent font-semibold mb-3">
-          🇪🇸 Spain HQ
+          🇪🇸 Spain
         </p>
         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
           Los Alcázares <span className="gradient-text">&amp; beyond</span>
         </h1>
         <p className="text-xl md:text-2xl text-muted max-w-2xl leading-relaxed">
-          Planning hub for the house on the Mar Menor coast. Trips, decisions,
-          layouts, and a home theatre that actually sounds right.
+          Password required. Family + household only. Trips, decisions, layouts, and a home theatre that actually sounds right.
         </p>
       </section>
 

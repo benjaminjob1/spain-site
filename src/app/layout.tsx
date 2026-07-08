@@ -5,9 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "spain.benjob.me — Los Alcázares & Beyond",
-  description:
-    "Planning hub for the new Spain house. Los Alcázares base, Mar Menor coast, and trips further afield. Includes home theatre planner and house decision tools.",
+  title: "spain.benjob.me",
+  description: "spain.benjob.me",
 };
 
 export default function RootLayout({
